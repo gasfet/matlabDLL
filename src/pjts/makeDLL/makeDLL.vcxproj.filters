@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{f56c2365-bd47-478f-b988-528c7bd9d126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{470ae3fb-499c-41fd-8f0b-e3a0d1ef2ca1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\ftdi_i2c.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ftdi_infra.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ftdi_mid.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\ftdi_spi.c">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\source\ftdi_common.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftdi_infra.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\ftdi_mid.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libftd2xx\ftd2xx.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\libmpsse_i2c.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\libmpsse_spi.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
