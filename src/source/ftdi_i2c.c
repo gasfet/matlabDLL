@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * \file ftdi_i2c.c
  *
  * \author FTDI
@@ -194,13 +194,13 @@ static FT_STATUS I2C_WriteDeviceAddress(FT_HANDLE handle, UCHAR deviceAddress,
  * This function saves the channel's configuration data
  *
  * \param[in] handle Handle of the channel
- * \param[in] config Pointer to ChannelConfig structure(memory to be allocated by caller)
+ * \param[in] config Pointer to I2C_ChannelConfig structure(memory to be allocated by caller)
  * \return Returns status code of type FT_STATUS(see D2XX Programmer's Guide)
  * \sa
  * \note
  * \warning
  */
-static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config);
+static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, I2C_ChannelConfig *config);
 
 // #ifdef I2C_CMD_GETDEVICEID_SUPPORTED
 /*!
@@ -209,13 +209,13 @@ static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config);
  * This function retrieves the channel's configuration data that was previously saved
  *
  * \param[in] handle Handle of the channel
- * \param[in] config Pointer to ChannelConfig structure(memory to be allocated by caller)
+ * \param[in] config Pointer to I2C_ChannelConfig structure(memory to be allocated by caller)
  * \return Returns status code of type FT_STATUS(see D2XX Programmer's Guide)
  * \sa
  * \note
  * \warning
  */
-static FT_STATUS I2C_GetChannelConfig(FT_HANDLE handle, ChannelConfig **config);
+static FT_STATUS I2C_GetChannelConfig(FT_HANDLE handle, I2C_ChannelConfig **config);
 // #endif // I2C_CMD_GETDEVICEID_SUPPORTED
 
 /*!
@@ -328,7 +328,7 @@ static FT_STATUS I2C_FastRead(FT_HANDLE handle, UCHAR deviceAddress,
 	ChannelContext channelContext;
 #else
 /*Root of the linked list that holds channel configurations*/
-	ChannelContext *gListHead  = NULL;
+	I2C_ChannelContext *gListHead  = NULL;
 #endif
 
 
@@ -412,7 +412,7 @@ FTDIMPSSE_API FT_STATUS I2C_OpenChannel(DWORD index, FT_HANDLE *handle)
 	return status;
 }
 
-FTDIMPSSE_API FT_STATUS I2C_InitChannel(FT_HANDLE handle, ChannelConfig *config)
+FTDIMPSSE_API FT_STATUS I2C_InitChannel(FT_HANDLE handle, I2C_ChannelConfig *config)
 {
 	FT_STATUS status;
 	uint8 buffer[3];//3
@@ -470,7 +470,7 @@ FTDIMPSSE_API FT_STATUS I2C_InitChannel(FT_HANDLE handle, ChannelConfig *config)
 FTDIMPSSE_API FT_STATUS I2C_CloseChannel(FT_HANDLE handle)
 {
 	FT_STATUS status;
-	ChannelConfig *config = NULL;
+	I2C_ChannelConfig *config = NULL;
 	UCHAR dir, val;
 	UCHAR buffer[5];
 	DWORD noOfBytes = 0;
@@ -1531,8 +1531,8 @@ static FT_STATUS I2C_WriteDeviceAddress(FT_HANDLE handle, UCHAR deviceAddress,
 static FT_STATUS I2C_AddChannelConfig(FT_HANDLE handle)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
-	ChannelContext *lastNode = NULL;
+	I2C_ChannelContext *tempNode = NULL;
+	I2C_ChannelContext *lastNode = NULL;
 	FN_ENTER;
 	DBG(MSG_DEBUG,"line %u handle = 0x%x\n", __LINE__,(unsigned)handle);
 
@@ -1541,7 +1541,7 @@ static FT_STATUS I2C_AddChannelConfig(FT_HANDLE handle)
 #else
 	if (NULL == gListHead )
 	{/* Add first node */
-		gListHead  = (ChannelContext *) INFRA_MALLOC(sizeof(ChannelContext));
+		gListHead  = (I2C_ChannelContext *) INFRA_MALLOC(sizeof(I2C_ChannelContext));
 		if (NULL == gListHead )
 		{
 			status = FT_INSUFFICIENT_RESOURCES;
@@ -1561,7 +1561,7 @@ static FT_STATUS I2C_AddChannelConfig(FT_HANDLE handle)
 		{
 			lastNode = tempNode;
 		}
-		tempNode = (ChannelContext *) INFRA_MALLOC(sizeof(ChannelContext));
+		tempNode = (I2C_ChannelContext *) INFRA_MALLOC(sizeof(I2C_ChannelContext));
 		if (NULL == tempNode)
 		{
 			status = FT_INSUFFICIENT_RESOURCES;
@@ -1586,8 +1586,8 @@ static FT_STATUS I2C_AddChannelConfig(FT_HANDLE handle)
 static FT_STATUS I2C_DelChannelConfig(FT_HANDLE handle)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode;
-	ChannelContext *lastNode = NULL;
+	I2C_ChannelContext *tempNode;
+	I2C_ChannelContext *lastNode = NULL;
 	FN_ENTER;
 
 #ifdef NO_LINKED_LIST
@@ -1634,15 +1634,15 @@ static FT_STATUS I2C_DelChannelConfig(FT_HANDLE handle)
 	return status;
 }
 
-static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config)
+static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, I2C_ChannelConfig *config)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
+	I2C_ChannelContext *tempNode = NULL;
 	FN_ENTER;
 
 #ifdef NO_LINKED_LIST
-		memcpy(&channelContext.config, config, sizeof(ChannelConfig));
-		channelContext.handle = handle;
+		memcpy(&I2C_ChannelContext.config, config, sizeof(I2C_ChannelConfig));
+		I2C_ChannelContext.handle = handle;
 		status = FT_OK;
 #else
 	if (NULL == gListHead )
@@ -1659,7 +1659,7 @@ static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config)
 				(unsigned)handle, (unsigned)tempNode->next);
 			if (tempNode->handle == handle)
 			{/*Node found*/
-				INFRA_MEMCPY(&(tempNode->config), config, sizeof(ChannelConfig));
+				INFRA_MEMCPY(&(tempNode->config), config, sizeof(I2C_ChannelConfig));
 				status = FT_OK;
 			}
 		}
@@ -1673,16 +1673,16 @@ static FT_STATUS I2C_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config)
 	return status;
 }
 
-static FT_STATUS I2C_GetChannelConfig(FT_HANDLE handle, ChannelConfig **config)
+static FT_STATUS I2C_GetChannelConfig(FT_HANDLE handle, I2C_ChannelConfig **config)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
+	I2C_ChannelContext *tempNode = NULL;
 	FN_ENTER;
 
 #ifdef NO_LINKED_LIST
-		if (handle == channelContext.handle)
+		if (handle == I2C_ChannelContext.handle)
 		{
-			*config= &(channelContext.config);
+			*config= &(I2C_ChannelContext.config);
 			status = FT_OK;
 		}
 		else
@@ -1716,7 +1716,7 @@ static FT_STATUS I2C_GetChannelConfig(FT_HANDLE handle, ChannelConfig **config)
 static FT_STATUS I2C_DisplayList(void)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
+	I2C_ChannelContext *tempNode = NULL;
 	FN_ENTER;
 	printf("%s:%d:%s():\n", __FILE__, __LINE__, __FUNCTION__);
 	for (tempNode = gListHead ; 0 != tempNode; tempNode = tempNode->next)

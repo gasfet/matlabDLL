@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
  * \file ftdi_spi.c
  *
  * \author FTDI
  * \date 20110523
  *
- * Copyright © 2000-2014 Future Technology Devices International Limited
+ * Copyright ?2000-2014 Future Technology Devices International Limited
  *
  *
  * THIS SOFTWARE IS PROVIDED BY FUTURE TECHNOLOGY DEVICES INTERNATIONAL LIMITED ``AS IS'' AND ANY EXPRESS
@@ -101,13 +101,13 @@ static FT_STATUS SPI_DelChannelConfig(FT_HANDLE handle);
  * that were previously allocated using SPI_AddChannelConfig
  *
  * \param[in] handle Handle of the channel
- * \param[in] config Pointer to ChannelConfig structure
+ * \param[in] config Pointer to SPI_ChannelConfig structure
  * \return Returns status code of type FT_STATUS(see D2XX Programmer's Guide)
  * \sa
  * \note
  * \warning
  */
-static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config);
+static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, SPI_ChannelConfig *config);
 
 /*!
  * \brief Retrieves the pointer to the channel's configuration data
@@ -118,13 +118,13 @@ static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config);
  * in the pointer provided in the second parameter of the function
  *
  * \param[in] handle Handle of the channel
- * \param[in] config Pointer to ChannelConfig structure
+ * \param[in] config Pointer to SPI_ChannelConfig structure
  * \return Returns status code of type FT_STATUS(see D2XX Programmer's Guide)
  * \sa
  * \note
  * \warning
  */
-static FT_STATUS SPI_GetChannelConfig(FT_HANDLE handle, ChannelConfig **config);
+static FT_STATUS SPI_GetChannelConfig(FT_HANDLE handle, SPI_ChannelConfig **config);
 
 /*!
  * \brief Display the contents of linked list
@@ -179,10 +179,10 @@ static FT_STATUS SPI_Read8bits(FT_HANDLE handle, uint8 *byte, uint8 len, uint8 l
 /******************************************************************************/
 
 #ifdef NO_LINKED_LIST
-	ChannelContext channelContext;
+	SPI_ChannelContext SPI_ChannelContext;
 #else
 /*Root of the linked list that holds channel configurations*/
-	ChannelContext *ListHead = NULL;
+	SPI_ChannelContext *ListHead = NULL;
 #endif
 
 
@@ -238,7 +238,7 @@ FTDIMPSSE_API FT_STATUS SPI_OpenChannel(DWORD index, FT_HANDLE *handle)
 	return status;
 }
 
-FTDIMPSSE_API FT_STATUS SPI_InitChannel(FT_HANDLE handle, ChannelConfig *config)
+FTDIMPSSE_API FT_STATUS SPI_InitChannel(FT_HANDLE handle, SPI_ChannelConfig *config)
 {
 	FT_STATUS status;
 	uint8 buffer[5];
@@ -328,7 +328,7 @@ FTDIMPSSE_API FT_STATUS SPI_InitChannel(FT_HANDLE handle, ChannelConfig *config)
 FTDIMPSSE_API FT_STATUS SPI_CloseChannel(FT_HANDLE handle)
 {
 	FT_STATUS status;
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	UCHAR dir, val;
 	UCHAR buffer[5];
 	DWORD noOfBytes = 0;
@@ -412,12 +412,12 @@ FTDIMPSSE_API FT_STATUS SPI_Read(FT_HANDLE handle, UCHAR *buffer,
 	{/*sizeToTransfer is in bytes*/
 		DWORD noOfBytesTransferred = 0, CurrentXferSize = 0;
 		uint8 cmdBuffer[4];
-		ChannelConfig *config = NULL;
+		SPI_ChannelConfig *config = NULL;
 		uint8 mode;
 
 		status = SPI_GetChannelConfig(handle, &config);
 		CHECK_STATUS(status);
-		/*mode is given by bit1-bit0 of ChannelConfig.Options*/
+		/*mode is given by bit1-bit0 of SPI_ChannelConfig.Options*/
 		mode = (config->configOptions & SPI_CONFIG_OPTION_MODE_MASK);
 		/* Command to write 8bits */
 		switch(mode)
@@ -487,7 +487,7 @@ FTDIMPSSE_API FT_STATUS SPI_Write(FT_HANDLE handle, UCHAR *buffer,
 	DWORD sizeToTransfer, LPDWORD sizeTransferred, DWORD transferOptions)
 {
 	FT_STATUS status;
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	uint8 byte;
 	uint8 bitsToTransfer = 0;
 
@@ -502,7 +502,7 @@ FTDIMPSSE_API FT_STATUS SPI_Write(FT_HANDLE handle, UCHAR *buffer,
 	LOCK_CHANNEL(handle);
 	status = SPI_GetChannelConfig(handle, &config);
 	CHECK_STATUS(status);
-	/* Mode is given by bit1-bit0 of ChannelConfig.Options */
+	/* Mode is given by bit1-bit0 of SPI_ChannelConfig.Options */
 	DBG(MSG_DEBUG,"configOptions = 0x%x\n",(unsigned)config->configOptions);
 	DBG(MSG_DEBUG,"LatencyTimer=%u\n",(unsigned)config->LatencyTimer);
 
@@ -538,12 +538,12 @@ FTDIMPSSE_API FT_STATUS SPI_Write(FT_HANDLE handle, UCHAR *buffer,
 	{/* sizeToTransfer is in bytes */
 		DWORD noOfBytesTransferred = 0, CurrentXferSize = 0;
 		uint8 cmdBuffer[3];
-		ChannelConfig *config = NULL;
+		SPI_ChannelConfig *config = NULL;
 		uint8 mode;
 
 		status = SPI_GetChannelConfig(handle, &config);
 		CHECK_STATUS(status);
-		/*mode is given by bit1-bit0 of ChannelConfig.Options*/
+		/*mode is given by bit1-bit0 of SPI_ChannelConfig.Options*/
 		mode = (config->configOptions & SPI_CONFIG_OPTION_MODE_MASK);
 		/* Command to write 8bits */
 		switch(mode)
@@ -610,7 +610,7 @@ FTDIMPSSE_API FT_STATUS SPI_ReadWrite(FT_HANDLE handle, UCHAR *inBuffer,
 	DWORD transferOptions)
 {
 	FT_STATUS status;
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	UCHAR mode;
 	UCHAR bitsToTransfer = 0;
 	DWORD noOfBytesTransferred = 0;
@@ -628,7 +628,7 @@ FTDIMPSSE_API FT_STATUS SPI_ReadWrite(FT_HANDLE handle, UCHAR *inBuffer,
 	status = SPI_GetChannelConfig(handle, &config);
 	CHECK_STATUS(status);
 
-	/*mode is given by bit1-bit0 of ChannelConfig.Options*/
+	/*mode is given by bit1-bit0 of SPI_ChannelConfig.Options*/
 	mode = (config->configOptions & SPI_CONFIG_OPTION_MODE_MASK);
 
 	if (transferOptions & SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE)
@@ -882,7 +882,7 @@ FTDIMPSSE_API FT_STATUS SPI_ChangeCS(FT_HANDLE handle, DWORD configOptions)
 	uint32 noOfBytes = 0;
 	DWORD noOfBytesTransferred;
 #endif
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	FN_ENTER;
 #ifdef ENABLE_PARAMETER_CHECKING
 	CHECK_NULL_RET(handle);
@@ -935,7 +935,7 @@ FTDIMPSSE_API FT_STATUS SPI_ChangeCS(FT_HANDLE handle, DWORD configOptions)
 
 FT_STATUS SPI_ToggleCS(FT_HANDLE handle, bool state)
 {
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	bool activeLow;
 	FT_STATUS status = FT_OTHER_ERROR;
 	uint8 buffer[5];
@@ -1012,8 +1012,8 @@ FT_STATUS SPI_ToggleCS(FT_HANDLE handle, bool state)
 static FT_STATUS SPI_AddChannelConfig(FT_HANDLE handle)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
-	ChannelContext *lastNode = NULL;
+	SPI_ChannelContext *tempNode = NULL;
+	SPI_ChannelContext *lastNode = NULL;
 	FN_ENTER;
 	DBG(MSG_DEBUG,"line %u handle = 0x%x\n", __LINE__,(unsigned)handle);
 
@@ -1022,7 +1022,7 @@ static FT_STATUS SPI_AddChannelConfig(FT_HANDLE handle)
 #else
 	if (NULL == ListHead)
 	{/* Add first node */
-		ListHead = (ChannelContext *) INFRA_MALLOC(sizeof(ChannelContext));
+		ListHead = (SPI_ChannelContext *) INFRA_MALLOC(sizeof(SPI_ChannelContext));
 		if (NULL == ListHead)
 		{
 			status = FT_INSUFFICIENT_RESOURCES;
@@ -1042,7 +1042,7 @@ static FT_STATUS SPI_AddChannelConfig(FT_HANDLE handle)
 		{
 			lastNode = tempNode;
 		}
-		tempNode = (ChannelContext *) INFRA_MALLOC(sizeof(ChannelContext));
+		tempNode = (SPI_ChannelContext *) INFRA_MALLOC(sizeof(SPI_ChannelContext));
 		if (NULL == tempNode)
 		{
 			status = FT_INSUFFICIENT_RESOURCES;
@@ -1067,8 +1067,8 @@ static FT_STATUS SPI_AddChannelConfig(FT_HANDLE handle)
 static FT_STATUS SPI_DelChannelConfig(FT_HANDLE handle)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode;
-	ChannelContext *lastNode = NULL;
+	SPI_ChannelContext *tempNode;
+	SPI_ChannelContext *lastNode = NULL;
 	FN_ENTER;
 
 #ifdef NO_LINKED_LIST
@@ -1115,15 +1115,15 @@ static FT_STATUS SPI_DelChannelConfig(FT_HANDLE handle)
 	return status;
 }
 
-static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config)
+static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, SPI_ChannelConfig *config)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
+	SPI_ChannelContext *tempNode = NULL;
 	FN_ENTER;
 
 #ifdef NO_LINKED_LIST
-		memcpy(&channelContext.config, config, sizeof(ChannelConfig));
-		channelContext.handle = handle;
+		memcpy(&SPI_ChannelContext.config, config, sizeof(SPI_ChannelConfig));
+		SPI_ChannelContext.handle = handle;
 		status = FT_OK;
 #else
 	if (NULL == ListHead)
@@ -1140,7 +1140,7 @@ static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config)
 				(unsigned)handle, (unsigned)tempNode->next);
 			if (tempNode->handle == handle)
 			{/*Node found*/
-				INFRA_MEMCPY(&(tempNode->config), config, sizeof(ChannelConfig));
+				INFRA_MEMCPY(&(tempNode->config), config, sizeof(SPI_ChannelConfig));
 				status = FT_OK;
 			}
 		}
@@ -1154,16 +1154,16 @@ static FT_STATUS SPI_SaveChannelConfig(FT_HANDLE handle, ChannelConfig *config)
 	return status;
 }
 
-static FT_STATUS SPI_GetChannelConfig(FT_HANDLE handle, ChannelConfig **config)
+static FT_STATUS SPI_GetChannelConfig(FT_HANDLE handle, SPI_ChannelConfig **config)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
+	SPI_ChannelContext *tempNode = NULL;
 	FN_ENTER;
 
 #ifdef NO_LINKED_LIST
-		if (handle == channelContext.handle)
+		if (handle == SPI_ChannelContext.handle)
 		{
-			*config= &(channelContext.config);
+			*config= &(SPI_ChannelContext.config);
 			status = FT_OK;
 		}
 		else
@@ -1197,7 +1197,7 @@ static FT_STATUS SPI_GetChannelConfig(FT_HANDLE handle, ChannelConfig **config)
 static FT_STATUS SPI_DisplayList(void)
 {
 	FT_STATUS status = FT_OTHER_ERROR;
-	ChannelContext *tempNode = NULL;
+	SPI_ChannelContext *tempNode = NULL;
 	FN_ENTER;
 	printf("%s:%d:%s():\n", __FILE__, __LINE__, __FUNCTION__);
 	for (tempNode = ListHead; 0 != tempNode; tempNode = tempNode->next)
@@ -1221,13 +1221,13 @@ static FT_STATUS SPI_Write8bits(FT_HANDLE handle, uint8 byte, uint8 len, uint8 l
 	FT_STATUS status = FT_OTHER_ERROR;
 	DWORD noOfBytes = 0, noOfBytesTransferred = 0;
 	uint8 buffer[10];
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	uint8 mode;
 	FN_ENTER;
 
 	status = SPI_GetChannelConfig(handle, &config);
 	CHECK_STATUS(status);
-	/*mode is given by bit1-bit0 of ChannelConfig.Options*/
+	/*mode is given by bit1-bit0 of SPI_ChannelConfig.Options*/
 	mode = (config->configOptions & SPI_CONFIG_OPTION_MODE_MASK);
 	/* Command to write 8bits */
 	switch(mode)
@@ -1264,13 +1264,13 @@ static FT_STATUS SPI_Read8bits(FT_HANDLE handle, uint8 *byte, uint8 len, uint8 l
 	FT_STATUS status = FT_OTHER_ERROR;
 	DWORD noOfBytes = 0, noOfBytesTransferred = 0;
 	uint8 buffer[10];
-	ChannelConfig *config = NULL;
+	SPI_ChannelConfig *config = NULL;
 	uint8 mode;
 
 	FN_ENTER;
 	status = SPI_GetChannelConfig(handle, &config);
 	CHECK_STATUS(status);
-	/*mode is given by bit1-bit0 of ChannelConfig.Options*/
+	/*mode is given by bit1-bit0 of SPI_ChannelConfig.Options*/
 	mode = (config->configOptions & SPI_CONFIG_OPTION_MODE_MASK);
 	/* Command to write 8bits */
 	switch(mode)

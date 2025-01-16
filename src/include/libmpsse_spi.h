@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * \file libmpsse_spi.h
  *
  * \author FTDI
@@ -106,7 +106,7 @@ extern "C" {
 application during initialization of the channel and then it is saved in a linked-list and used
 internally by other SPI functions during operation. The structure is removed from the list when
 the user application calls SPI_CloseChannel */
-typedef struct ChannelConfig_t
+typedef struct ChannelConfig_spi
 {
 	DWORD	ClockRate; /* SPI clock rate, value should be <= 30000000 */
 	UCHAR	LatencyTimer; /* value in milliseconds, maximum value should be <= 255 */
@@ -130,16 +130,16 @@ typedef struct ChannelConfig_t
 					/* BIT31 -BIT24: Final values of the pins		*/
 	USHORT		currentPinState;/* BIT7   -BIT0:   Current direction of the pins	*/
 								/* BIT15 -BIT8:   Current values of the pins	*/
-}ChannelConfig;
+}SPI_ChannelConfig;
 
 /* This structure associates the channel configuration information to a handle stores them in the
 form of a linked list */
-typedef struct ChannelContext_t
+typedef struct ChannelContext_spi
 {
 	FT_HANDLE 		handle;
-	ChannelConfig	config;
-	struct ChannelContext_t *next;
-}ChannelContext;
+	SPI_ChannelConfig	config;
+	struct ChannelContext_spi *next;
+}SPI_ChannelContext;
 
 
 /******************************************************************************/
@@ -170,7 +170,7 @@ typedef struct ChannelContext_t
  * function(eg: DllMain for windows) that is called by the OS automatically during startup.
  * \warning
  */
-FTDIMPSSE_API void Init_libMPSSE(void);
+FTDIMPSSE_API void WINAPI Init_libMPSSE(void);
 
 /*!
  * \brief Cleans up the module before unloading
@@ -185,7 +185,7 @@ FTDIMPSSE_API void Init_libMPSSE(void);
  * \note
  * \warning
  */
-FTDIMPSSE_API void Cleanup_libMPSSE(void);
+FTDIMPSSE_API void WINAPI Cleanup_libMPSSE(void);
 
 /*!
  * \brief Gets the number of SPI channels connected to the host
@@ -242,13 +242,13 @@ FTDIMPSSE_API FT_STATUS SPI_OpenChannel(DWORD index, FT_HANDLE *handle);
  * This function initializes the channel and the communication parameters associated with it
  *
  * \param[in] handle Handle of the channel
- * \param[out] config Pointer to ChannelConfig structure(memory to be allocated by caller)
+ * \param[out] config Pointer to SPI_ChannelConfig structure(memory to be allocated by caller)
  * \return Returns status code of type FT_STATUS(see D2XX Programmer's Guide)
  * \sa
  * \note
  * \warning
  */
-FTDIMPSSE_API FT_STATUS SPI_InitChannel(FT_HANDLE handle, ChannelConfig *config);
+FTDIMPSSE_API FT_STATUS SPI_InitChannel(FT_HANDLE handle, SPI_ChannelConfig *config);
 
 /*!
  * \brief Closes a channel
@@ -432,7 +432,7 @@ FTDIMPSSE_API FT_STATUS FT_ReadGPIO(FT_HANDLE handle, UCHAR *value);
  * \sa
  * \warning
  */
-FTDIMPSSE_API FT_STATUS Ver_libMPSSE(LPDWORD libmpsse, LPDWORD libftd2xx);
+FTDIMPSSE_API FT_STATUS WINAPI Ver_libMPSSE(LPDWORD libmpsse, LPDWORD libftd2xx);
 
 #ifdef __cplusplus
 }

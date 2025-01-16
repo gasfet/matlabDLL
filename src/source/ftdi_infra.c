@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
  * \file infra.c
  *
  * \author FTDI
  * \date 20110317
  *
- * Copyright © 2000-2014 Future Technology Devices International Limited
+ * Copyright ?2000-2014 Future Technology Devices International Limited
  *
  *
  * THIS SOFTWARE IS PROVIDED BY FUTURE TECHNOLOGY DEVICES INTERNATIONAL LIMITED ``AS IS'' AND ANY EXPRESS
@@ -223,7 +223,7 @@ FT_STATUS Infra_Delay(uint64 delay)
 /*						Local function definitions						  */
 /******************************************************************************/
 
-FTDIMPSSE_API void Init_libMPSSE(void)
+FTDIMPSSE_API void WINAPI Init_libMPSSE(void)
 {
 	FT_STATUS status;
 	(void)status;
@@ -304,7 +304,7 @@ FTDIMPSSE_API void Init_libMPSSE(void)
 	FN_EXIT;
 }
 
-FTDIMPSSE_API void Cleanup_libMPSSE(void)
+FTDIMPSSE_API void WINAPI Cleanup_libMPSSE(void)
 {
 	FT_STATUS status = FT_OK;
 	(void)status;
@@ -496,7 +496,7 @@ static DWORD versionNumberToHex(void)
  * \sa
  * \warning
  */
-FTDIMPSSE_API FT_STATUS Ver_libMPSSE(LPDWORD libmpsse, LPDWORD libftd2xx)
+FTDIMPSSE_API FT_STATUS WINAPI Ver_libMPSSE(LPDWORD libmpsse, LPDWORD libftd2xx)
 {
 	FT_STATUS status = FT_INVALID_PARAMETER;
 	

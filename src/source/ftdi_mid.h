@@ -1,4 +1,4 @@
-/*
+﻿/*
  * \file ftdi_mid.h
  *
  * \author FTDI

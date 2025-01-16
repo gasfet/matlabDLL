@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * \file libmpsse_i2c.h
  *
  * \author FTDI
@@ -149,7 +149,7 @@ typedef enum I2C_ClockRate_t{
 } I2C_CLOCKRATE;
 
 /**/
-typedef struct ChannelConfig_t
+typedef struct ChannelConfig_i2c
 {
 	I2C_CLOCKRATE	ClockRate; 
 	/** There were 2 functions I2C_TurnOn/OffDivideByFive
@@ -187,16 +187,16 @@ typedef struct ChannelConfig_t
 
 	USHORT		currentPinState;/* BIT7   -BIT0:   Current direction of the pins	*/
 								/* BIT15 -BIT8:   Current values of the pins	*/
-} ChannelConfig;
+} I2C_ChannelConfig;
 
 /* This structure associates the channel configuration information to a handle stores them in the
 form of a linked list */
-typedef struct ChannelContext_t
+typedef struct ChannelContext_i2c
 {
 	FT_HANDLE 		handle;
-	ChannelConfig	config;
-	struct ChannelContext_t *next;
-}ChannelContext;
+	I2C_ChannelConfig	config;
+	struct ChannelContext_i2c *next;
+} I2C_ChannelContext;
 
 
 /******************************************************************************/
@@ -223,7 +223,7 @@ typedef struct ChannelContext_t
  * function(eg: DllMain for windows) that is called by the OS automatically during startup.
  * \warning
  */
-FTDIMPSSE_API void Init_libMPSSE(void);
+FTDIMPSSE_API void WINAPI Init_libMPSSE(void);
 
 /*!
  * \brief Cleans up the module before unloading
@@ -238,7 +238,7 @@ FTDIMPSSE_API void Init_libMPSSE(void);
  * \note
  * \warning
  */
-FTDIMPSSE_API void Cleanup_libMPSSE(void);
+FTDIMPSSE_API void WINAPI Cleanup_libMPSSE(void);
 
 /*!
  * \brief Gets the number of I2C channels connected to the host
@@ -296,13 +296,13 @@ FTDIMPSSE_API FT_STATUS I2C_OpenChannel(DWORD index, FT_HANDLE *handle);
  * This function initializes the channel and the communication parameters associated with it
  *
  * \param[in] handle Handle of the channel
- * \param[out] config Pointer to ChannelConfig structure(memory to be allocated by caller)
+ * \param[out] config Pointer to I2C_ChannelConfig structure(memory to be allocated by caller)
  * \return Returns status code of type FT_STATUS(see D2XX Programmer's Guide)
  * \sa
  * \note
  * \warning
  */
-FTDIMPSSE_API FT_STATUS I2C_InitChannel(FT_HANDLE handle, ChannelConfig *config);
+FTDIMPSSE_API FT_STATUS I2C_InitChannel(FT_HANDLE handle, I2C_ChannelConfig *config);
 
 /*!
  * \brief Closes a channel
@@ -426,7 +426,7 @@ FTDIMPSSE_API FT_STATUS FT_ReadGPIO(FT_HANDLE handle, UCHAR *value);
  * \sa
  * \warning
  */
-FTDIMPSSE_API FT_STATUS Ver_libMPSSE(LPDWORD libmpsse, LPDWORD libftd2xx);
+FTDIMPSSE_API FT_STATUS WINAPI Ver_libMPSSE(LPDWORD libmpsse, LPDWORD libftd2xx);
 
 #ifdef __cplusplus
 }
