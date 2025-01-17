@@ -10,12 +10,17 @@ IncludePath=pwd(), ...
 InterfaceName="ftLib", ...
 OutputFolder=pwd(), ...
 OverwriteExistingDefinitionFiles=true);
-
+clear hFile
 
 %%
 
-% unload(clibConfiguration('ftLib'))
+addpath("ftLib\");
+t = clibConfiguration('ftLib');
+if t.Loaded
+    unload(t)
+end
 
 build(defineftLib)
 addpath("ftLib\");
 clibConfiguration('ftLib','ExecutionMode','outofprocess')
+clear t;
