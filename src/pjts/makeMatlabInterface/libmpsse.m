@@ -55,7 +55,7 @@ fcns.thunkname{fcnNum}='ulongvoidPtrint32Thunk';fcns.name{fcnNum}='SPI_ToggleCS'
 structs.s_ft_device_list_info_node.members=struct('Flags', 'ulong', 'Type', 'ulong', 'ID', 'ulong', 'LocId', 'ulong', 'SerialNumber', 'int8#16', 'Description', 'int8#64', 'ftHandle', 'voidPtr');
 structs.ChannelConfig_i2c.members=struct('ClockRate', 'I2C_ClockRate_t', 'LatencyTimer', 'uint8', 'Options', 'ulong', 'Pin', 'ulong', 'currentPinState', 'uint16');
 structs.ChannelContext_i2c.members=struct('handle', 'voidPtr', 'config', 'ChannelConfig_i2c', 'next', 'ChannelContext_i2cPtr');
-structs.ChannelConfig_spi.members=struct('ClockRate', 'ulong', 'LatencyTimer', 'uint8', 'configOptions', 'ulong', 'Pin', 'ulong', 'currentPinState', 'uint16');
+structs.ChannelConfig_spi.members=struct('ClockRate', 'ulong', 'LatencyTimer', 'uint8', 'Options', 'ulong', 'Pin', 'ulong', 'currentPinState', 'uint16');
 structs.ChannelContext_spi.members=struct('handle', 'voidPtr', 'config', 'ChannelConfig_spi', 'next', 'ChannelContext_spiPtr');
 enuminfo.I2C_ClockRate_t=struct('I2C_CLOCK_STANDARD_MODE',100000,'I2C_CLOCK_FAST_MODE',400000,'I2C_CLOCK_FAST_MODE_PLUS',1000000,'I2C_CLOCK_HIGH_SPEED_MODE',3400000);
 methodinfo=fcns;

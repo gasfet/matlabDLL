@@ -64,7 +64,7 @@ typedef struct ChannelConfig_spi
 {
 	DWORD	ClockRate; 
 	UCHAR	LatencyTimer;
-	DWORD	configOptions;	
+	DWORD	Options;	
 	DWORD		Pin;
 	USHORT		currentPinState;
 }SPI_ChannelConfig;
