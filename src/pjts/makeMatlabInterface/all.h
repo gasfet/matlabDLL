@@ -42,7 +42,7 @@ typedef struct ChannelContext_i2c
 {
     FT_HANDLE         handle;
     I2C_ChannelConfig    config;
-    struct ChannelContext_i2c *next;
+    void /*struct ChannelContext_i2c*/ *next;
 } I2C_ChannelContext;
 
 FTDIMPSSE_API void WINAPI Init_libMPSSE(void);
@@ -73,7 +73,7 @@ typedef struct ChannelContext_spi
 {
 	FT_HANDLE 		handle;
 	SPI_ChannelConfig	config;
-	struct ChannelContext_spi *next;
+	void /*struct ChannelContext_spi*/ *next;
 }SPI_ChannelContext;
 
 FTDIMPSSE_API FT_STATUS SPI_GetNumChannels(DWORD *numChannels);
