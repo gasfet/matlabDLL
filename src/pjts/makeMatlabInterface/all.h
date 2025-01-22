@@ -7,6 +7,15 @@
 #define FTDIMPSSE_API __declspec(dllexport)
 #define WINAPI      __stdcall
 
+#define I2C_TRANSFER_OPTIONS_START_BIT  0x00000001;
+#define I2C_TRANSFER_OPTIONS_STOP_BIT  0x00000002;
+#define I2C_TRANSFER_OPTIONS_BREAK_ON_NACK  0x00000004;
+#define I2C_TRANSFER_OPTIONS_NACK_LAST_BYTE  0x00000008;
+#define I2C_TRANSFER_OPTIONS_FAST_TRANSFER  0x00000030;
+#define I2C_TRANSFER_OPTIONS_FAST_TRANSFER_BYTES  0x00000010;
+#define I2C_TRANSFER_OPTIONS_FAST_TRANSFER_BITS  0x00000020;
+#define I2C_TRANSFER_OPTIONS_NO_ADDRESS  0x00000040;
+
 typedef ULONG    FT_STATUS;
 typedef PVOID    FT_HANDLE;
 
@@ -42,7 +51,7 @@ typedef struct ChannelContext_i2c
 {
     FT_HANDLE         handle;
     I2C_ChannelConfig    config;
-    struct ChannelContext_i2c *next;
+    void /*struct ChannelContext_i2c*/ *next;
 } I2C_ChannelContext;
 
 FTDIMPSSE_API void WINAPI Init_libMPSSE(void);
@@ -73,7 +82,7 @@ typedef struct ChannelContext_spi
 {
 	FT_HANDLE 		handle;
 	SPI_ChannelConfig	config;
-	struct ChannelContext_spi *next;
+	void /*struct ChannelContext_spi*/ *next;
 }SPI_ChannelContext;
 
 FTDIMPSSE_API FT_STATUS SPI_GetNumChannels(DWORD *numChannels);

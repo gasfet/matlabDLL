@@ -35,16 +35,16 @@ Cleanup_libMPSSEDefinition = addFunction(libDef, ...
 validate(Cleanup_libMPSSEDefinition);
 
 %% C++ function |Ver_libMPSSE| with MATLAB name |clib.ftLib.Ver_libMPSSE|
-% C++ Signature: FT_STATUS Ver_libMPSSE(LPDWORD libmpsse,LPDWORD libftd2xx)
+% C++ Signature: FT_STATUS Ver_libMPSSE(DWORD * libmpsse,DWORD * libftd2xx)
 
-%Ver_libMPSSEDefinition = addFunction(libDef, ...
-%    "FT_STATUS Ver_libMPSSE(LPDWORD libmpsse,LPDWORD libftd2xx)", ...
-%    "MATLABName", "clib.ftLib.Ver_libMPSSE", ...
-%    "Description", "clib.ftLib.Ver_libMPSSE Representation of C++ function Ver_libMPSSE."); % Modify help description values as needed.
-%defineArgument(Ver_libMPSSEDefinition, "libmpsse", "clib.array.ftLib.UnsignedLong", "input", <SHAPE>); % <MLTYPE> can be "clib.array.ftLib.UnsignedLong", or "uint32"
-%defineArgument(Ver_libMPSSEDefinition, "libftd2xx", "clib.array.ftLib.UnsignedLong", "input", <SHAPE>); % <MLTYPE> can be "clib.array.ftLib.UnsignedLong", or "uint32"
-%defineOutput(Ver_libMPSSEDefinition, "RetVal", "uint32");
-%validate(Ver_libMPSSEDefinition);
+Ver_libMPSSEDefinition = addFunction(libDef, ...
+   "FT_STATUS Ver_libMPSSE(DWORD * libmpsse,DWORD * libftd2xx)", ...
+   "MATLABName", "clib.ftLib.Ver_libMPSSE", ...
+   "Description", "clib.ftLib.Ver_libMPSSE Representation of C++ function Ver_libMPSSE."); % Modify help description values as needed.
+defineArgument(Ver_libMPSSEDefinition, "libmpsse", "clib.array.ftLib.UnsignedLong", "input", 1); % <MLTYPE> can be "clib.array.ftLib.UnsignedLong", or "uint32"
+defineArgument(Ver_libMPSSEDefinition, "libftd2xx", "clib.array.ftLib.UnsignedLong", "input", 1); % <MLTYPE> can be "clib.array.ftLib.UnsignedLong", or "uint32"
+defineOutput(Ver_libMPSSEDefinition, "RetVal", "uint32");
+validate(Ver_libMPSSEDefinition);
 
 %% Validate the library definition
 validate(libDef);

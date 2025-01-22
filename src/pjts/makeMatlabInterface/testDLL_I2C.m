@@ -60,6 +60,11 @@ function testDLL_I2C()
         I2C_TRANSFER_OPTIONS_FAST_TRANSFER_BITS = 0x00000020;
         I2C_TRANSFER_OPTIONS_NO_ADDRESS = 0x00000040;
 
+        PCA9698_I2C_ADDRESS = 0x20;
+        PCA9698_REG_INPUT_PORT0 = 0x00;
+        PCA9698_REG_OUTPUT_PORT0 = 0x08;
+        PCA9698_REG_CONFIG_PORT0 = 0x18;
+
         i2cOpt = bitor(...
             bitor(I2C_TRANSFER_OPTIONS_BREAK_ON_NACK, I2C_TRANSFER_OPTIONS_FAST_TRANSFER_BITS), ...
             I2C_TRANSFER_OPTIONS_FAST_TRANSFER_BITS);
@@ -84,7 +89,7 @@ function testDLL_I2C()
         % Convert the structure to a libstruct
         ChannelContext = libstruct('ChannelContext_i2c', s_I2C_ChannelContext);
 
-        for idx=1:1 % channels.Value
+        for idx=1:channels.Value
             ftHandle = libpointer('voidPtr', 1);
             status=calllib(LN,'I2C_OpenChannel',idx-1, ftHandle);
             if status == 0
@@ -99,7 +104,7 @@ function testDLL_I2C()
                         I2C_DEVICE_ADDRESS_EEPROM =        0x40;
                         % I2C_DEVICE_BUFFER_SIZE =            256;
                         % I2C_WRITE_COMPLETION_RETRY =        10;
-                        % for address = 1:1 %START_ADDRESS_EEPROM:(END_ADDRESS_EEPROM-1)
+                        % for address = 1:START_ADDRESS_EEPROM:(END_ADDRESS_EEPROM-1)
                         %     fprintf("writing byte at address = %d\n", address);
                         %     write_byte(I2C_DEVICE_ADDRESS_EEPROM, address, address + 1);
                         % end
@@ -213,7 +218,7 @@ function testDLL_I2C()
         r = bufferPtr.Value(1);
     end
 
-    function [status, r] = test()
+    function [status, r] = test2()
         bytesTransfered = libpointer('uint32Ptr', 0); % Pointer for transferred bytes
         bufferPtr = libpointer('uint8Ptr', zeros(1,256, 'uint8'));
         bufferPtr.Value(1) = 0x40;
@@ -247,6 +252,84 @@ function testDLL_I2C()
         r = bufferPtr.Value(1);
         bufferPtr.Value(1:3)
     end
+
+    function [status, r] = test()
+        status = 0;
+        r = 0;
+        try
+            PCA9698_WriteRegister(PCA9698_REG_CONFIG_PORT0, 0x00);
+            PCA9698_WriteRegister(PCA9698_REG_OUTPUT_PORT0, 0xFF);
+            [~, r] = PCA9698_ReadRegister(PCA9698_REG_INPUT_PORT0);
+            disp(r)
+        catch e
+            disp(e.message);
+        end
+    end
+
+    function status = PCA9698_WriteRegister(reg, value)
+        bytesTransfered = libpointer('uint32Ptr', 0); % Pointer for transferred bytes
+        bufferPtr = libpointer('uint8Ptr', zeros(1,256, 'uint8'));
+        bufferPtr.Value(1) = reg;
+        bufferPtr.Value(2) = value;
+        bytesToTransfer = 2;
+
+        % Call the I2C_DeviceWrite function to set the register address
+        optW = bitor(I2C_TRANSFER_OPTIONS_START_BIT, I2C_TRANSFER_OPTIONS_STOP_BIT, 'uint32');
+        % optW = bitor(optW, I2C_DEVICE_ADDRESS_EEPROM, 'uint32');
+        status = calllib(LN, 'I2C_DeviceWrite', ...
+            ftHandle, ...
+            uint8(PCA9698_I2C_ADDRESS), ...
+            bytesToTransfer, ...
+            bufferPtr, ...
+            bytesTransfered, ...
+            optW);
+
+         if status ~= 0
+             disp("레지스터 쓰기 실패");
+         end
+    
+    end
+
+    function [status, r] = PCA9698_ReadRegister(reg)
+        bytesTransfered = libpointer('uint32Ptr', 0); % Pointer for transferred bytes
+        bufferPtr = libpointer('uint8Ptr', zeros(1,256, 'uint8'));
+        bufferPtr.Value(1) = reg;
+        bytesToTransfer = 1;
+
+        % Call the I2C_DeviceWrite function to set the register address
+        optW = bitor(I2C_TRANSFER_OPTIONS_START_BIT, 0, 'uint32');
+        % optW = bitor(optW, I2C_DEVICE_ADDRESS_EEPROM, 'uint32');
+        status = calllib(LN, 'I2C_DeviceWrite', ...
+            ftHandle, ...
+            uint8(PCA9698_I2C_ADDRESS), ...
+            bytesToTransfer, ...
+            bufferPtr, ...
+            bytesTransfered, ...
+            optW);
+
+         if status ~= 0
+             disp("레지스터 쓰기 실패");
+         end
+
+        % Call the I2C_DeviceRead function
+        bytesToTransfer =1;
+        bytesTransfered.Value = 0;
+        optR = bitor(I2C_TRANSFER_OPTIONS_STOP_BIT, 0, 'uint32');
+        % optR = bitor(optR, I2C_TRANSFER_OPTIONS_NACK_LAST_BYTE, 'uint32');
+        status = calllib(LN, 'I2C_DeviceRead', ...
+            ftHandle, ...
+            uint8(PCA9698_I2C_ADDRESS), ...
+            bytesToTransfer, ...
+            bufferPtr, ...
+            bytesTransfered, ...
+            optR);
+
+         if status ~= 0
+             disp("레지스터 읽기 실패");
+         end
+        r = bufferPtr.Value(1);
+    end
+
 
 
 end
