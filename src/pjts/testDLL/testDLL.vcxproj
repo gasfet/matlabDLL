@@ -155,12 +155,12 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="testDLL.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\include\libmpsse_i2c.h" />
     <ClInclude Include="..\..\include\libmpsse_spi.h" />
     <ClInclude Include="..\..\libftd2xx\ftd2xx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="testDLL.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

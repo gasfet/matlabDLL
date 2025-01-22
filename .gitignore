@@ -22,3 +22,4 @@ src/pjts/makeMatlabInterface/ftdi_common.h
 src/pjts/makeMatlabInterface/ftd2xx.h
 src/pjts/makeMatlabInterface/libmpsse_i2c.h
 src/pjts/makeMatlabInterface/libmpsse_spi.h
+/src/pjts/makeMatlabInterface/.vs
